@@ -7,9 +7,10 @@ const requireAuth: string[] = [
   "/reporting",
   "/unauthorized",
   "/persona",
-  "/prompt"
+  "/prompt",
+  "/extensions",
 ];
-const requireAdmin: string[] = ["/reporting"];
+const requireAdmin: string[] = ["/reporting","/extensions"];
 
 export async function middleware(request: NextRequest) {
   const res = NextResponse.next();
@@ -43,6 +44,7 @@ export const config = {
   matcher: [
     "/unauthorized/:path*",
     "/reporting/:path*",
+    "/extensions/:path*",
     "/api/chat:path*",
     "/api/images:path*",
     "/chat/:path*",

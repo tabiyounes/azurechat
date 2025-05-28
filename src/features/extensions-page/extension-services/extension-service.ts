@@ -28,6 +28,7 @@ import {
 
 const KEY_VAULT_MASK = "**********";
 
+
 export const FindExtensionByID = async (
   id: string
 ): Promise<ServerActionResponse<ExtensionModel>> => {
@@ -143,6 +144,22 @@ export const CreateExtension = async (
   }
 };
 
+export const adminPage = async (): Promise<ServerActionResponse<null>> => {
+  const user = await getCurrentUser();
+
+  if (!user.isAdmin) {
+    return {
+      status: "UNAUTHORIZED",
+      errors: [{ message: "You are not authorized to perform this action" }],
+    };
+  }
+
+  return {
+  status: "OK",
+  response: null,
+};
+};
+
 const secureHeaderValues = async (extension: ExtensionModel) => {
   const vault = AzureKeyVaultInstance();
 
@@ -167,8 +184,13 @@ export const EnsureExtensionOperation = async (
   const currentUser = await getCurrentUser();
   const hashedId = await userHashedId();
 
-  if (extensionResponse.status === "OK") {
-    if (currentUser.isAdmin || extensionResponse.response.userId === hashedId) {
+  // if (extensionResponse.status === "OK") {
+  //   if (currentUser.isAdmin || extensionResponse.response.userId === hashedId) {
+  //     return extensionResponse;
+  //   }
+  // }
+    if (extensionResponse.status === "OK") {
+    if (currentUser.isAdmin) {
       return extensionResponse;
     }
   }
@@ -177,7 +199,7 @@ export const EnsureExtensionOperation = async (
     status: "UNAUTHORIZED",
     errors: [
       {
-        message: `Extension not found with id: ${id}`,
+        message: `Extension not found or unauthorized access for id: ${id}`,
       },
     ],
   };
