@@ -39,7 +39,7 @@ export const ExtensionCard: FC<Props> = (props) => {
         {props.showContextMenu && (
           <Button
             variant={"outline"}
-            title="Show message"
+            title="Afficher le message"
             onClick={() => extensionStore.openAndUpdate(props.extension)}
           >
             <Pencil size={18} />

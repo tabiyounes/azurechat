@@ -77,9 +77,9 @@ param dalleDeploymentName string = 'dall-e-3'
 param dalleModelName string = 'dall-e-3'
 param dalleApiVersion string = '2023-12-01-preview'
 
-param formRecognizerSkuName string = 'S0'
+param formRecognizerSkuName string = 'F0'
 param searchServiceIndexName string = 'azure-chat'
-param searchServiceSkuName string = 'standard'
+param searchServiceSkuName string = 'free'
 
 // TODO: define good default Sku and settings for storage account
 param storageServiceSku object = { name: 'Standard_LRS' }
@@ -96,7 +96,7 @@ var tags = { 'azd-env-name': name }
 
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : 'rg-${name}'
+  name: !empty(resourceGroupName) ? resourceGroupName : 'rgr-${name}'
   location: location
   tags: tags
 }

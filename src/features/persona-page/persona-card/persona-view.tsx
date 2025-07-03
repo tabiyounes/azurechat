@@ -22,7 +22,7 @@ export const ViewPersona: FC<Props> = (props) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant={"outline"} title="Show message">
+        <Button variant={"outline"} title="Afficher le message">
           <Info size={18} />
         </Button>
       </SheetTrigger>
@@ -39,12 +39,12 @@ export const ViewPersona: FC<Props> = (props) => {
                 className="min-h-[300px]"
                 defaultValue={persona.personaMessage}
                 name="personaMessage"
-                placeholder="Personality of your persona"
+                placeholder="Personnalité de votre persona"
               />
               <p className="text-xs text-muted-foreground">
                 {persona.isPublished
-                  ? `This is published and everyone in your organisation can use ${persona.name} persona`
-                  : "This is only visible to you"}
+                  ? `Ceci est publié et tout le monde dans votre organisation peut utiliser le persona ${persona.name}`
+                  : "Ceci est uniquement visible par vous"}
               </p>
             </div>
           </div>

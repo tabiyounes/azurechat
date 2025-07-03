@@ -41,14 +41,14 @@ export const UserProfile = () => {
               {session?.user?.email}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {session?.user?.isAdmin ? "Admin" : ""}
+              {session?.user?.isAdmin ? "Administrateur" : ""}
             </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col gap-1">
-            <p className="text-sm font-medium leading-none">Switch themes</p>
+            <p className="text-sm font-medium leading-none">Changer le thème</p>
             <ThemeToggle />
           </div>
         </DropdownMenuLabel>
@@ -58,7 +58,7 @@ export const UserProfile = () => {
           onClick={() => signOut({ callbackUrl: "/" })}
         >
           <LogOut {...menuIconProps} size={18} />
-          <span>Log out</span>
+          <span>Se déconnecter</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

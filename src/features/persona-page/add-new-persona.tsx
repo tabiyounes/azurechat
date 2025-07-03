@@ -45,10 +45,11 @@ export const AddNewPersona: FC<Props> = (props) => {
       return (
         <div className="flex items-center space-x-2">
           <Switch name="isPublished" defaultChecked={persona.isPublished} />
-          <Label htmlFor="description">Publish</Label>
+          <Label htmlFor="description">Publier</Label>
         </div>
       );
     }
+    return null;
   };
 
   return (
@@ -67,7 +68,7 @@ export const AddNewPersona: FC<Props> = (props) => {
             className="flex-1 -mx-6 flex max-h-[calc(100vh-140px)]"
             type="always"
           >
-            <div className="pb-6 px-6 flex gap-8 flex-col  flex-1">
+            <div className="pb-6 px-6 flex gap-8 flex-col flex-1">
               <input type="hidden" name="id" defaultValue={persona.id} />
               {formState && formState.status === "OK" ? null : (
                 <>
@@ -80,33 +81,33 @@ export const AddNewPersona: FC<Props> = (props) => {
                 </>
               )}
               <div className="grid gap-2">
-                <Label>Name</Label>
+                <Label>Nom</Label>
                 <Input
                   type="text"
                   required
                   name="name"
                   defaultValue={persona.name}
-                  placeholder="Name of your persona"
+                  placeholder="Nom de votre persona"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="description">Short description</Label>
+                <Label htmlFor="description">Petite description</Label>
                 <Input
                   type="text"
                   required
                   defaultValue={persona.description}
                   name="description"
-                  placeholder="Short description"
+                  placeholder="Description courte"
                 />
               </div>
-              <div className="grid gap-2 flex-1 ">
-                <Label htmlFor="personaMessage">Personality</Label>
+              <div className="grid gap-2 flex-1">
+                <Label htmlFor="personaMessage">Personnalité</Label>
                 <Textarea
                   className="min-h-[300px]"
                   required
                   defaultValue={persona.personaMessage}
                   name="personaMessage"
-                  placeholder="Personality of your persona"
+                  placeholder="Personnalité de votre persona"
                 />
               </div>
             </div>
@@ -125,7 +126,7 @@ function Submit() {
   return (
     <Button disabled={status.pending} className="gap-2">
       <LoadingIndicator isLoading={status.pending} />
-      Save
+      Enregistrer
     </Button>
   );
 }

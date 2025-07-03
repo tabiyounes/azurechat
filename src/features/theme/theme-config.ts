@@ -1,10 +1,10 @@
 export const AI_NAME = "Azure Chat";
-export const AI_DESCRIPTION = "Azure Chat is a friendly AI assistant.";
-export const CHAT_DEFAULT_PERSONA = AI_NAME + " default";
+export const AI_DESCRIPTION = "Azure Chat est un assistant IA convivial.";
+export const CHAT_DEFAULT_PERSONA = AI_NAME + " par défaut";
 
-export const CHAT_DEFAULT_SYSTEM_PROMPT = `You are a friendly ${AI_NAME} AI assistant. You must always return in markdown format.
+export const CHAT_DEFAULT_SYSTEM_PROMPT = `Vous êtes un assistant IA convivial ${AI_NAME}. Vous devez toujours répondre au format markdown.
 
-You have access to the following functions:
-1. create_img: You must only use the function create_img if the user asks you to create an image.`;
+Vous avez accès aux fonctions suivantes :
+1. create_img : Vous devez uniquement utiliser la fonction create_img si l'utilisateur vous demande de créer une image.`;
 
-export const NEW_CHAT_NAME = "New chat";
+export const NEW_CHAT_NAME = "Nouvelle discussion";

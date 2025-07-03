@@ -8,10 +8,10 @@ export const BingSearch = () => {
   const newExample = () => {
     const bingExample: ExtensionModel = {
       createdAt: new Date(),
-      description: "Bring up to date information with Bing Search",
+      description: "Apportez des informations à jour avec Bing Search",
       id: "",
       name: "Bing Search",
-      executionSteps: `You are an expert in searching the web using BingSearch function. `,
+      executionSteps: `Vous êtes un expert en recherche web utilisant la fonction BingSearch. `,
       functions: [
         {
           code: `{
@@ -21,23 +21,23 @@ export const BingSearch = () => {
   "properties": {
     "query": {
       "type": "object",
-      "description": "Ues this as the search query parameters",
+      "description": "Utilisez ceci comme paramètres de requête de recherche",
       "properties": {
         "BING_SEARCH_QUERY": {
           "type": "string",
-          "description": "Search query from the user",
-          "example": "What is the current weather in Sydney, Australia?"
+          "description": "Requête de recherche de l'utilisateur",
+          "example": "Quel est le temps actuel à Sydney, Australie ?"
         }
       },
       "example": {
-        "BING_SEARCH_QUERY": "What is the current weather in Sydney, Australia?"
+        "BING_SEARCH_QUERY": "Quel est le temps actuel à Sydney, Australie ?"
       },
       "required": ["BING_SEARCH_QUERY"]
     }
   },
   "required": ["query"]
 },
-"description": "Use BingSearch to search for information on the web to bring up to date information"
+"description": "Utilisez BingSearch pour rechercher des informations sur le web et apporter des informations à jour"
 }
           `,
           endpoint:
@@ -51,7 +51,7 @@ export const BingSearch = () => {
         {
           id: uniqueId(),
           key: "Ocp-Apim-Subscription-Key",
-          value: "YOUR API KEY HERE",
+          value: "VOTRE CLÉ API ICI",
         },
       ],
       isPublished: false,
@@ -65,7 +65,7 @@ export const BingSearch = () => {
   return (
     <HeroButton
       title="Bing Search"
-      description="Bring up to date information with Bing Search"
+      description="Apportez des informations à jour avec Bing Search"
       icon={<Globe />}
       onClick={newExample}
     />

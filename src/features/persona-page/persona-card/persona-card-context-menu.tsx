@@ -40,13 +40,13 @@ export const PersonaCardContextMenu: FC<Props> = (props) => {
             onClick={() => personaStore.updatePersona(props.persona)}
           >
             <Pencil size={18} />
-            <span>Edit</span>
+            <span>Modifier</span>
           </DropdownMenuItemWithIcon>
           <DropdownMenuItemWithIcon
             onClick={async () => await handleAction("delete")}
           >
             <Trash size={18} />
-            <span>Delete</span>
+            <span>Supprimer</span>
           </DropdownMenuItemWithIcon>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -63,14 +63,13 @@ const useDropdownAction = (props: { persona: PersonaModel }) => {
     switch (action) {
       case "delete":
         if (
-          window.confirm(`Are you sure you want to delete ${persona.name}?`)
+          window.confirm(`Êtes-vous sûr de vouloir supprimer ${persona.name} ?`)
         ) {
           await DeletePersona(persona.id);
           RevalidateCache({
             page: "persona",
           });
         }
-
         break;
     }
     setIsLoading(false);

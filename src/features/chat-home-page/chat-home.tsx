@@ -26,7 +26,7 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
                 width={60}
                 height={60}
                 quality={100}
-                alt="ai-icon"
+                alt="icône-ia"
               />{" "}
               {AI_NAME}
             </>
@@ -49,10 +49,11 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
                   );
                 })}
               </div>
-            ) :
-              <p className="text-muted-foreground max-w-xl">No extentions created</p>
-            }
-
+            ) : (
+              <p className="text-muted-foreground max-w-xl">
+                Aucune extension créée
+              </p>
+            )}
           </div>
           <div>
             <h2 className="text-2xl font-bold mb-3">Personas</h2>
@@ -69,9 +70,11 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
                   );
                 })}
               </div>
-            ) :
-              <p className="text-muted-foreground max-w-xl">No personas created</p>
-            }
+            ) : (
+              <p className="text-muted-foreground max-w-xl">
+                Aucun profil créé
+              </p>
+            )}
           </div>
         </div>
         <AddExtension />

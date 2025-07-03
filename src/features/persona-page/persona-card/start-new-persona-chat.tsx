@@ -36,7 +36,7 @@ export const StartNewPersonaChat: FC<Props> = (props) => {
       ) : (
         <MessageCircle size={18} />
       )}
-      Start chat
+      Démarrer la conversation
     </Button>
   );
 };

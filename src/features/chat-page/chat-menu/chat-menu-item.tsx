@@ -49,7 +49,10 @@ export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
           {isLoading ? (
             <LoadingIndicator isLoading={isLoading} />
           ) : (
-            <MoreVertical size={18} aria-label="Chat Menu Item Dropdown Menu" />
+            <MoreVertical
+              size={18}
+              aria-label="Menu déroulant de l’élément de chat"
+            />
           )}
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" align="start">
@@ -58,21 +61,23 @@ export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
           >
             <BookmarkCheck size={18} />
             <span>
-              {props.chatThread.bookmarked ? "Remove bookmark" : "Bookmark"}
+              {props.chatThread.bookmarked
+                ? "Retirer des favoris"
+                : "Ajouter aux favoris"}
             </span>
           </DropdownMenuItemWithIcon>
           <DropdownMenuItemWithIcon
             onClick={async () => await handleAction("rename")}
           >
             <Pencil size={18} />
-            <span>Rename</span>
+            <span>Renommer</span>
           </DropdownMenuItemWithIcon>
           <DropdownMenuSeparator />
           <DropdownMenuItemWithIcon
             onClick={async () => await handleAction("delete")}
           >
             <Trash size={18} />
-            <span>Delete</span>
+            <span>Supprimer</span>
           </DropdownMenuItemWithIcon>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -93,14 +98,16 @@ const useDropdownAction = (props: { chatThread: ChatThreadModel }) => {
         await BookmarkChatThread({ chatThread });
         break;
       case "rename":
-        const name = window.prompt("Enter the new name for the chat thread:");
+        const name = window.prompt(
+          "Entrez le nouveau nom de la conversation :"
+        );
         if (name !== null) {
           await UpdateChatThreadTitle({ chatThread, name });
         }
         break;
       case "delete":
         if (
-          window.confirm("Are you sure you want to delete this chat thread?")
+          window.confirm("Êtes-vous sûr de vouloir supprimer cette conversation ?")
         ) {
           await DeleteChatThreadByID(chatThread.id);
         }

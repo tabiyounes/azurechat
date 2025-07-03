@@ -21,9 +21,9 @@ param dalleApiVersion string
 
 param speechServiceSkuName string = 'S0'
 
-param formRecognizerSkuName string = 'S0'
+param formRecognizerSkuName string = 'F0'
 
-param searchServiceSkuName string = 'standard'
+param searchServiceSkuName string = 'free'
 param searchServiceIndexName string = 'azure-chat'
 
 param storageServiceSku object
@@ -125,10 +125,10 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
     reserved: true
   }
   sku: {
-    name: 'P0v3'
-    tier: 'Premium0V3'
-    size: 'P0v3'
-    family: 'Pv3'
+    name: 'B1'
+    tier: 'Basic'
+    size: 'B1'
+    family: 'B'
     capacity: 1
   }
   kind: 'linux'
@@ -394,7 +394,12 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   tags: tags
   kind: 'GlobalDocumentDB'
   properties: {
-    databaseAccountOfferType: 'Standard'
+    databaseAccountOfferType: 'Standard'  // Required even for serverless
+    capabilities: [
+      {
+        name: 'EnableServerless'  // Enables serverless tier
+      }
+    ]
     disableLocalAuth: disableLocalAuth
     publicNetworkAccess: usePrivateEndpoints ? 'Disabled' : 'Enabled'
     locations: [

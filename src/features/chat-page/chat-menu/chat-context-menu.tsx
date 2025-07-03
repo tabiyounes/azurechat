@@ -17,7 +17,7 @@ export const ChatContextMenu = () => {
 
   const handleAction = async () => {
     if (
-      window.confirm("Are you sure you want to delete all the chat threads?")
+      window.confirm("Êtes-vous sûr de vouloir supprimer toutes les conversations ?")
     ) {
       setIsLoading(true);
       const response = await DeleteAllChatThreads();
@@ -37,13 +37,13 @@ export const ChatContextMenu = () => {
         {isLoading ? (
           <LoadingIndicator isLoading={isLoading} />
         ) : (
-          <MoreVertical size={18} aria-label="Chat Menu Dropdown Menu"/>
+          <MoreVertical size={18} aria-label="Menu déroulant du chat" />
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent side="right" align="start">
         <DropdownMenuItemWithIcon onClick={async () => await handleAction()}>
           <Trash size={18} />
-          <span>Delete all</span>
+          <span>Tout supprimer</span>
         </DropdownMenuItemWithIcon>
       </DropdownMenuContent>
     </DropdownMenu>

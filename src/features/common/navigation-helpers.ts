@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-type Page = "extensions" | "persona" | "prompt" | "chat" | "settings";
+type Page = "extensions" | "persona" | "prompt" | "chat" | "settings" | "complaints";
 
 export const RevalidateCache = (props: {
   page: Page;

@@ -95,7 +95,7 @@ export const ChatInput = () => {
           />
           {loading === "loading" ? (
             <StopChat stop={() => chatStore.stopGeneratingMessages()} />
-          ) : (
+          ) : ( 
             <SubmitChat ref={submitButton} />
           )}
         </ChatInputPrimaryActionArea>

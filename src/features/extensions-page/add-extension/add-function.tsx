@@ -23,14 +23,14 @@ export const AddFunction = () => {
   return (
     <div className="flex gap-4 flex-col bg-foreground/[0.02] border p-4 rounded-md text-sm">
       <div className="flex items-center justify-between">
-        <SheetTitle>Functions</SheetTitle>
+        <SheetTitle>Fonctions</SheetTitle>
         <Button
           type="button"
           className="flex gap-2"
           variant={"outline"}
           onClick={() => extensionStore.addFunction()}
         >
-          <Plus size={18} /> Add Function
+          <Plus size={18} /> Ajouter une fonction
         </Button>
       </div>
       {extension.functions.map((func, index) => (
@@ -63,27 +63,30 @@ export const AddFunction = () => {
                     })
                   }
                 >
-                  <Copy size={18} /> Clone
+                  <Copy size={18} /> Dupliquer
                 </Button>
                 <Button
                   className="flex gap-2"
                   variant={"outline"}
                   onClick={() => extensionStore.removeFunction(func.id)}
                 >
-                  <Trash size={18} /> Delete
+                  <Trash size={18} /> Supprimer
                 </Button>
               </div>
             </div>
 
             <div className="grid gap-2">
-              <Label>API endpoint</Label>
+              <Label>Point de terminaison API</Label>
               <div className="flex gap-2">
                 <Select
                   defaultValue={func.endpointType}
                   name="endpoint-type[]"
                   required
+                >
+                  <SelectTrigger
+                    className="w-[80px]"
+                    aria-label="Sélectionnez la méthode HTTP pour le point de terminaison API"
                   >
-                  <SelectTrigger className="w-[80px]" aria-label="Select HTTP method for API endpoint">
                     <SelectValue placeholder="GET" defaultValue={"GET"} />
                   </SelectTrigger>
                   <SelectContent>
@@ -98,14 +101,14 @@ export const AddFunction = () => {
                   required
                   name="endpoint[]"
                   defaultValue={func.endpoint}
-                  placeholder="Enter URL"
+                  placeholder="Entrez l’URL"
                 />
               </div>
             </div>
 
-            <Label>GPT Function call definition (JSON)</Label>
+            <Label>Définition de l’appel de fonction GPT (JSON)</Label>
             <div className="w-[580px] max-w-[580px]">
-              <input type="hidden" name="code[]" value={func.code}/>
+              <input type="hidden" name="code[]" value={func.code} />
               <CodeMirror
                 value={func.code}
                 lang="json"
@@ -129,6 +132,6 @@ const getName = (value: string) => {
     const val = JSON.parse(value);
     return val.name;
   } catch (e) {
-    return "Unknown";
+    return "Inconnu";
   }
 };

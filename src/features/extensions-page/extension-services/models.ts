@@ -12,15 +12,15 @@ export const HeaderSchema = z.object({
   key: z
     .string()
     .min(1, {
-      message: "Header key cannot be empty",
+      message: "La clé d'en-tête ne peut pas être vide",
     })
-    .refine(refineFromEmpty, "Header key cannot be empty"),
+    .refine(refineFromEmpty, "La clé d'en-tête ne peut pas être vide"),
   value: z
     .string()
     .min(1, {
-      message: "Header value cannot be empty",
+      message: "La valeur d'en-tête ne peut pas être vide",
     })
-    .refine(refineFromEmpty, "Header value cannot be empty"),
+    .refine(refineFromEmpty, "La valeur d'en-tête ne peut pas être vide"),
 });
 
 export type EndpointType = z.infer<typeof EndpointTypeSchema>;
@@ -34,19 +34,19 @@ export const EndpointTypeSchema = z.enum([
 ]);
 
 export const ExtensionFunctionSchema = z.object({
-  id: z.string({ required_error: "Function ID is required" }),
+  id: z.string({ required_error: "L'ID de fonction est requis" }),
   code: z
     .string()
     .min(1, {
-      message: "Function code cannot be empty",
+      message: "Le code de fonction ne peut pas être vide",
     })
-    .refine(refineFromEmpty, "Function code cannot be empty"),
+    .refine(refineFromEmpty, "Le code de fonction ne peut pas être vide"),
   endpoint: z
     .string()
     .min(1, {
-      message: "Function endpoint cannot be empty",
+      message: "Le point de terminaison de fonction ne peut pas être vide",
     })
-    .refine(refineFromEmpty, "Function endpoint cannot be empty"),
+    .refine(refineFromEmpty, "Le point de terminaison de fonction ne peut pas être vide"),
   endpointType: EndpointTypeSchema,
   isOpen: z.boolean(),
 });
@@ -56,21 +56,21 @@ export const ExtensionModelSchema = z.object({
   name: z
     .string()
     .min(1, {
-      message: "Title cannot be empty",
+      message: "Le titre ne peut pas être vide",
     })
-    .refine(refineFromEmpty, "Title cannot be empty"),
+    .refine(refineFromEmpty, "Le titre ne peut pas être vide"),
   description: z
     .string()
     .min(1, {
-      message: "Description cannot be empty",
+      message: "La description ne peut pas être vide",
     })
-    .refine(refineFromEmpty, "Description cannot be empty"),
+    .refine(refineFromEmpty, "La description ne peut pas être vide"),
   executionSteps: z
     .string()
     .min(1, {
-      message: "persona cannot be empty",
+      message: "Le persona ne peut pas être vide",
     })
-    .refine(refineFromEmpty, "Description cannot be empty"),
+    .refine(refineFromEmpty, "La description ne peut pas être vide"),
   headers: z.array(HeaderSchema),
   userId: z.string(),
   isPublished: z.boolean(),

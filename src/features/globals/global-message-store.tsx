@@ -12,7 +12,7 @@ export const showError = (error: string, reload?: () => void) => {
     description: error,
     action: reload ? (
       <ToastAction
-        altText="Try again"
+        altText="Essaie de nouveau"
         onClick={() => {
           reload();
         }}

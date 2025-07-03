@@ -40,13 +40,13 @@ export const ExtensionCardContextMenu: FC<Props> = (props) => {
             onClick={() => extensionStore.openAndUpdate(props.extension)}
           >
             <Pencil size={18} />
-            <span>Edit</span>
+            <span>Modifier</span>
           </DropdownMenuItemWithIcon>
           <DropdownMenuItemWithIcon
             onClick={async () => await handleAction("delete")}
           >
             <Trash size={18} />
-            <span>Delete</span>
+            <span>Supprimer</span>
           </DropdownMenuItemWithIcon>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -63,7 +63,7 @@ const useDropdownAction = (props: { extension: ExtensionModel }) => {
     switch (action) {
       case "delete":
         if (
-          window.confirm(`Are you sure you want to delete ${extension.name}?`)
+          window.confirm(`Êtes-vous sûr de vouloir supprimer ${extension.name} ?`)
         ) {
           await DeleteExtension(extension.id);
           RevalidateCache({
