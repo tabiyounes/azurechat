@@ -25,44 +25,39 @@ Votre réponse doit être:
 
 export const ChatApiComplaints = async (props: {
   userMessage: string;
-  image?: string;
+  image: string;
   signal: AbortSignal;
 }): Promise<ChatCompletionStreamingRunner> => {
   const { userMessage, image, signal } = props;
 
-  console.log("ChatApiComplaints called with:", { userMessage, hasImage: !!image });
+  if (!image?.trim()) {      // ❷ hard fail if missing
+    throw new Error("An image is required for this endpoint.");
+  }
 
   const openAI = OpenAIInstance();
-  
-  // Build messages array conditionally
-  const messages = [
-    {
-      role: "system",
-      content: COMPLAINT_SYSTEM_PROMPT,
-    },
-    {
-      role: "user",
-      content: image && image.trim()
-        ? [
-            { type: "text", text: userMessage },
-            {
-              type: "image_url",
-              image_url: {
-                url: image,
-              },
-            },
-          ]
-        : userMessage, // Simple string if no image
-    },
-  ];
 
   return openAI.beta.chat.completions.stream(
     {
-      model: "",
+      model: "",   
       stream: true,
       max_tokens: 4096,
-      messages,
+      messages: [
+        {
+          role: "system" as const,
+          content: COMPLAINT_SYSTEM_PROMPT,
+        },
+        {
+          role: "user" as const,
+          content: [          // ❸ always multimodal
+            { type: "text", text: userMessage },
+            {
+              type: "image_url",
+              image_url: { url: image },
+            },
+          ],
+        },
+      ],
     },
-    { signal }
+    { signal },
   );
 };
