@@ -6,51 +6,13 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Label } from "@/features/ui/label";
 import { ImageInput } from "@/features/ui/chat/chat-input-area/image-input";
-import { ChatInputForm } from "@/features/ui/chat/chat-input-area/chat-input-area";
-import { useFileStore } from "../chat-page/chat-input/file/file-store";
 import { complaintsStore, useComplaints } from "@/features/complaints-page/complaint-store";
-import {
-  ChatDocumentModel,
-  ChatMessageModel,
-  ChatThreadModel,
-} from "../chat-page/chat-services/models";
+
 interface ComplaintPageProps {}
 
 export const ComplaintPage: FC<ComplaintPageProps> = () => {
   const formRef = useRef<HTMLFormElement>(null);
-  const { suggestion, loading } = useComplaints(); // for AI response & loading state
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    // Grab values from form
-    const causeTechnique = formData.get("causeTechnique") as string;
-    const actionCorrective = formData.get("actionCorrective") as string;
-    const actionClient = formData.get("actionClient") as string;
-    const imageBase64 = formData.get("image-base64") as string;
-
-    // Build prompt string
-    const prompt = `
-Action Technique : ${causeTechnique}
-Action Corrective : ${actionCorrective}
-Action Client : ${actionClient}
-    `.trim();
-
-    complaintsStore.updateInput(prompt);
-
-    // Create API content field as stringified JSON (needed by your backend)
-    const content = JSON.stringify({
-      message: prompt,
-      id: "complaints-thread",
-    });
-
-    formData.set("content", content);
-
-    // Submit formData to complaintsStore method that calls API
-    await complaintsStore.submitComplaint(formData);
-  };
+  const { suggestion, loading, error } = useComplaints();
 
   return (
     <ScrollArea className="flex-1">
@@ -58,8 +20,11 @@ Action Client : ${actionClient}
         <ComplaintHero />
         <form 
           ref={formRef}
-          onSubmit={handleSubmit}
-           // optional label near form submit button
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            await complaintsStore.submitComplaint(formData);
+          }}
         >
           <div className="container max-w-6xl py-6 flex flex-col md:flex-row gap-6">
             {/* Left side: form inputs */}
@@ -81,6 +46,7 @@ Action Client : ${actionClient}
                     name="causeTechnique"
                     placeholder="Ex : délais, erreur de gestion, justificatif manquant, problème technique, niveau des garanties…"
                     required
+                    disabled={loading === "loading"}
                   />
                 </div>
 
@@ -93,6 +59,7 @@ Action Client : ${actionClient}
                     name="actionCorrective"
                     placeholder="Ex : complément de remboursement de X€, mise à jour des données, traitement du sinistre ce jour… OU contractuel, maintien du refus ou du processus"
                     required
+                    disabled={loading === "loading"}
                   />
                 </div>
 
@@ -104,11 +71,15 @@ Action Client : ${actionClient}
                     id="actionClient"
                     name="actionClient"
                     placeholder="Ex : envoi de document complémentaire… Pas d'action"
-                    required
+                    disabled={loading === "loading"}
                   />
                 </div>
 
-                <Button type="submit" disabled={loading === "loading"}>
+                {/* Submit button */}
+                <Button 
+                  type="submit"
+                  disabled={loading === "loading"}
+                >
                   {loading === "loading" ? "Envoi..." : "Soumettre"}
                 </Button>
               </div>
@@ -117,12 +88,16 @@ Action Client : ${actionClient}
             {/* Right side: AI suggestion */}
             <div className="w-full md:w-2/5 bg-muted border rounded-xl p-4 h-fit">
               <h2 className="text-lg font-semibold mb-2">Réponse suggérée</h2>
-              <p className="text-sm text-muted-foreground whitespace-pre-line">
-                {suggestion || "Veuillez remplir le formulaire et soumettre pour générer une réponse."}
-              </p>
+              {error ? (
+                <p className="text-sm text-red-500 whitespace-pre-line">{error}</p>
+              ) : (
+                <p className="text-sm text-muted-foreground whitespace-pre-line">
+                  {suggestion || "Veuillez remplir le formulaire et soumettre pour générer une réponse."}
+                </p>
+              )}
             </div>
           </div>
-        </form >
+        </form>
       </main>
     </ScrollArea>
   );

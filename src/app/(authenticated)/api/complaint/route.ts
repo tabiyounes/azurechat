@@ -2,6 +2,7 @@ import { ComplaintAPIEntry } from "@/features/complaints-page/chat-api/chat-api-
 import { UserPrompt } from "@/features/chat-page/chat-services/models";
 
 export async function POST(req: Request) {
+  try {
   const formData = await req.formData();
   const content = formData.get("content") as unknown as string;
   const multimodalImage = formData.get("image-base64") as unknown as string;
@@ -10,6 +11,12 @@ export async function POST(req: Request) {
     ...JSON.parse(content),
     multimodalImage,
   };
-
-  return await ComplaintAPIEntry(userPrompt, req.signal);
+    return await ComplaintAPIEntry(userPrompt, req.signal);
+  } catch (error) {
+    console.error("Error in POST handler:", error);
+    return new Response(JSON.stringify({ error: "Internal server error", details: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 }

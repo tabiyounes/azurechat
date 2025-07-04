@@ -57,7 +57,7 @@ async function ReportingContent(props: ChatReportingProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Conversation</TableHead>
-            <TableHead className="w-[200px]">User</TableHead>
+            <TableHead className="w-[200px]">Utilisateur</TableHead>
             <TableHead className="w-[100px]">Date</TableHead>
           </TableRow>
         </TableHeader>

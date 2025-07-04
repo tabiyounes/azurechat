@@ -3,7 +3,6 @@ import "server-only";
 
 import { OpenAIInstance } from "@/features/common/services/openai";
 import { ChatCompletionStreamingRunner } from "openai/resources/beta/chat/completions";
-import { ChatThreadModel } from "@/features/chat-page/chat-services/models";
 
 // Define your dedicated complaint system prompt here
 const COMPLAINT_SYSTEM_PROMPT = `
@@ -25,40 +24,44 @@ Votre réponse doit être:
 `;
 
 export const ChatApiComplaints = async (props: {
-  chatThread: ChatThreadModel;
   userMessage: string;
-  image: string;
+  image?: string; // Made optional
   signal: AbortSignal;
 }): Promise<ChatCompletionStreamingRunner> => {
-  const { chatThread, userMessage, image, signal } = props;
+  const { userMessage, image, signal } = props;
+
+  console.log("ChatApiComplaints called with:", { userMessage, hasImage: !!image });
 
   const openAI = OpenAIInstance();
   
- return openAI.beta.chat.completions.stream(
+  // Build messages array conditionally
+  const messages = [
     {
-      model: "",
-      stream: true,
-      max_tokens: 4096,
-      messages: [
-        {
-          role: "system",
-          content:
-            chatThread.personaMessage +
-            "\n You are an expert in extracting insights from images that are uploaded to the chat. \n You will answer questions about the image that is provided.",
-        },
-        {
-          role: "user",
-          content: [
-            { type: "text", text: userMessage },
+      role: "system" as const,
+      content: COMPLAINT_SYSTEM_PROMPT,
+    },
+    {
+      role: "user" as const,
+      content: image && image.trim()
+        ? [
+            { type: "text" as const, text: userMessage },
             {
-              type: "image_url",
+              type: "image_url" as const,
               image_url: {
                 url: image,
               },
             },
-          ],
-        },
-      ],
+          ]
+        : userMessage, // Simple string if no image
+    },
+  ];
+
+  return openAI.beta.chat.completions.stream(
+    {
+      model: "",
+      stream: true,
+      max_tokens: 4096,
+      messages,
     },
     { signal }
   );

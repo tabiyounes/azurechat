@@ -26,8 +26,8 @@ export const MainMenu = async () => {
     <Menu>
       <MenuBar>
         <MenuItemContainer>
-          <MenuItem tooltip="Home" asChild>
-            <MenuLink href="/chat" ariaLabel="Go to the Home page">
+          <MenuItem tooltip="Accueil" asChild>
+            <MenuLink href="/chat" ariaLabel="Aller à la page d'accueil">
               <Home {...menuIconProps} />
             </MenuLink>
           </MenuItem>
@@ -35,36 +35,36 @@ export const MainMenu = async () => {
         </MenuItemContainer>
         <MenuItemContainer>
           <MenuItem tooltip="Chat">
-            <MenuLink href="/chat" ariaLabel="Go to the Chat page">
+            <MenuLink href="/chat" ariaLabel="Aller à la page de chat">
               <MessageCircle {...menuIconProps} />
             </MenuLink>
           </MenuItem>
-          <MenuItem tooltip="Persona">
-            <MenuLink href="/persona" ariaLabel="Go to the Persona configuration page">
+          <MenuItem tooltip="Personas">
+            <MenuLink href="/persona" ariaLabel="Aller à la page de configuration des personas">
               <VenetianMask {...menuIconProps} />
             </MenuLink>
           </MenuItem>
 
-          <MenuItem tooltip="prompts">
-            <MenuLink href="/prompt" ariaLabel="Go to the Prompt Library configuration page">
+          <MenuItem tooltip="Prompts">
+            <MenuLink href="/prompt" ariaLabel="Aller à la bibliothèque de prompts">
               <Book {...menuIconProps} />
             </MenuLink>
           </MenuItem>
 
-          <MenuItem tooltip="complaints">
-            <MenuLink href="/complaints" ariaLabel="Go to the complaints page">
+          <MenuItem tooltip="Réclamations">
+            <MenuLink href="/complaints" ariaLabel="Aller à la page des réclamations">
               <FilePen {...menuIconProps} />
             </MenuLink>
           </MenuItem>
           {user.isAdmin && (
             <>
-              <MenuItem tooltip="extensions">
-                <MenuLink href="/extensions" ariaLabel="Go to the Extensions configuration page">
+              <MenuItem tooltip="Extensions">
+                <MenuLink href="/extensions" ariaLabel="Aller à la page des extensions">
                   <PocketKnife {...menuIconProps} />
                 </MenuLink>
               </MenuItem>
-              <MenuItem tooltip="reporting">
-                <MenuLink href="/reporting" ariaLabel="Go to the Admin reporting" >
+              <MenuItem tooltip="Rapports">
+                <MenuLink href="/reporting" ariaLabel="Aller à la page d'administration des rapports">
                   <Sheet {...menuIconProps} />
                 </MenuLink>
               </MenuItem>
@@ -72,7 +72,7 @@ export const MainMenu = async () => {
           )}
         </MenuItemContainer>
         <MenuItemContainer>
-          <MenuItem tooltip="Profile">
+          <MenuItem tooltip="Profil">
             <UserProfile />
           </MenuItem>
         </MenuItemContainer>

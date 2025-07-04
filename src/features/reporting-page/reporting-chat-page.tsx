@@ -9,12 +9,12 @@ import ChatMessageContainer from "@/features/ui/chat/chat-message-area/chat-mess
 import ChatMessageContentArea from "@/features/ui/chat/chat-message-area/chat-message-content";
 import MessageContent from "../chat-page/message-content";
 
-interface ReportingChatPageProps {
+interface PageChatReportingProps {
   messages: Array<ChatMessageModel>;
   chatDocuments: Array<ChatDocumentModel>;
 }
 
-export default function ReportingChatPage(props: ReportingChatPageProps) {
+export default function PageChatReporting(props: PageChatReportingProps) {
   return (
     <main className="flex flex-1 relative flex-col">
       <ChatMessageContainer>

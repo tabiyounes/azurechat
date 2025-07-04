@@ -37,7 +37,7 @@ export const AddPromptSlider: FC<SliderProps> = (props) => {
       return (
         <div className="flex items-center space-x-2">
           <Switch name="isPublished" defaultChecked={prompt.isPublished} />
-          <Label htmlFor="description">Publish</Label>
+          <Label htmlFor="description">Publier</Label>
         </div>
       );
     }
@@ -52,14 +52,14 @@ export const AddPromptSlider: FC<SliderProps> = (props) => {
     >
       <SheetContent className="min-w-[480px] sm:w-[540px] flex flex-col">
         <SheetHeader>
-          <SheetTitle>Persona</SheetTitle>
+          <SheetTitle>Prompt</SheetTitle>
         </SheetHeader>
         <form action={formAction} className="flex-1 flex flex-col">
           <ScrollArea
             className="flex-1 -mx-6 flex max-h-[calc(100vh-140px)]"
             type="always"
           >
-            <div className="pb-6 px-6 flex gap-8 flex-col  flex-1">
+            <div className="pb-6 px-6 flex gap-8 flex-col flex-1">
               <input type="hidden" name="id" defaultValue={prompt.id} />
               {formState && formState.status === "OK" ? null : (
                 <>
@@ -72,23 +72,23 @@ export const AddPromptSlider: FC<SliderProps> = (props) => {
                 </>
               )}
               <div className="grid gap-2">
-                <Label>Name</Label>
+                <Label>Nom</Label>
                 <Input
                   type="text"
                   required
                   name="name"
                   defaultValue={prompt.name}
-                  placeholder="Name of the prompt"
+                  placeholder="Nom du prompt"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="description">Short description</Label>
+                <Label htmlFor="description">Brève description</Label>
                 <Textarea
                   required
                   defaultValue={prompt.description}
                   name="description"
                   className="h-96"
-                  placeholder="eg: Write a funny joke that a 5 year old would understand"
+                  placeholder="ex : Raconte une blague drôle qu’un enfant de 5 ans pourrait comprendre"
                 />
               </div>
             </div>
@@ -107,7 +107,7 @@ function Submit() {
   return (
     <Button disabled={status.pending} className="gap-2">
       <LoadingIndicator isLoading={status.pending} />
-      Save
+      Enregistrer
     </Button>
   );
 }

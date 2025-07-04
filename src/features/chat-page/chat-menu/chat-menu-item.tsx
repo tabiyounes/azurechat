@@ -57,7 +57,7 @@ export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" align="start">
           <DropdownMenuItemWithIcon
-            onClick={async () => await handleAction("bookmark")}
+            onClick={async () => await handleAction("favori")}
           >
             <BookmarkCheck size={18} />
             <span>
@@ -67,14 +67,14 @@ export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
             </span>
           </DropdownMenuItemWithIcon>
           <DropdownMenuItemWithIcon
-            onClick={async () => await handleAction("rename")}
+            onClick={async () => await handleAction("renommer")}
           >
             <Pencil size={18} />
             <span>Renommer</span>
           </DropdownMenuItemWithIcon>
           <DropdownMenuSeparator />
           <DropdownMenuItemWithIcon
-            onClick={async () => await handleAction("delete")}
+            onClick={async () => await handleAction("supprimer")}
           >
             <Trash size={18} />
             <span>Supprimer</span>
@@ -85,7 +85,7 @@ export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
   );
 };
 
-type DropdownAction = "bookmark" | "rename" | "delete";
+type DropdownAction = "favori" | "renommer" | "supprimer";
 
 const useDropdownAction = (props: { chatThread: ChatThreadModel }) => {
   const { chatThread } = props;
@@ -94,10 +94,10 @@ const useDropdownAction = (props: { chatThread: ChatThreadModel }) => {
   const handleAction = async (action: DropdownAction) => {
     setIsLoading(true);
     switch (action) {
-      case "bookmark":
+      case "favori":
         await BookmarkChatThread({ chatThread });
         break;
-      case "rename":
+      case "renommer":
         const name = window.prompt(
           "Entrez le nouveau nom de la conversation :"
         );
@@ -105,7 +105,7 @@ const useDropdownAction = (props: { chatThread: ChatThreadModel }) => {
           await UpdateChatThreadTitle({ chatThread, name });
         }
         break;
-      case "delete":
+      case "supprimer":
         if (
           window.confirm("Êtes-vous sûr de vouloir supprimer cette conversation ?")
         ) {

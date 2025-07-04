@@ -1,30 +1,15 @@
 import { proxy, useSnapshot } from "valtio";
-import { uniqueId } from "@/features/common/util";
 import { ParsedEvent, ReconnectInterval, createParser } from "eventsource-parser";
-import { ChatMessageModel } from "@/features/chat-page/chat-services/models";
 
 class ComplaintsState {
-  public messages: Array<ChatMessageModel> = [];
-  public input: string = "";
   public loading: "idle" | "loading" = "idle";
-  public suggestion: string = ""; // ✅ Used by the UI
-
-  updateInput(value: string) {
-    this.input = value;
-  }
-
-  private addToMessages(message: ChatMessageModel) {
-    const existing = this.messages.find((m) => m.id === message.id);
-    if (existing) {
-      existing.content = message.content;
-    } else {
-      this.messages.push(message);
-    }
-  }
+  public suggestion: string = "";
+  public error: string = "";
 
   public async submitComplaint(formData: FormData) {
     this.loading = "loading";
-    this.suggestion = ""; // ✅ Reset before starting
+    this.suggestion = "";
+    this.error = "";
 
     try {
       const response = await fetch("/api/complaint", {
@@ -33,69 +18,69 @@ class ComplaintsState {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.message || 
+          `HTTP error! status: ${response.status}`
+        );
       }
 
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error("No response body");
+      const contentType = response.headers.get("content-type");
+      if (contentType?.includes("application/json")) {
+        const data = await response.json();
+        this.suggestion = data.response || data.message || data.content || "";
+      } else if (contentType?.includes("text/event-stream")) {
+        await this.handleStreamingResponse(response);
+      } else {
+        const text = await response.text();
+        this.suggestion = text;
       }
-
-      const decoder = new TextDecoder();
-      let assistantMessageId = uniqueId();
-      let fullContent = "";
-
-      const parser = createParser((event: ParsedEvent | ReconnectInterval) => {
-        if (event.type === "event") {
-          try {
-            const json = JSON.parse(event.data);
-            const content = json.choices?.[0]?.delta?.content || "";
-            
-            if (content) {
-              // ✅ Update the live suggestion string for UI
-              this.suggestion += content;
-              fullContent += content;
-            }
-          } catch (error) {
-            console.error("Error parsing event data:", error);
-          }
-        }
-      });
-
-      let done = false;
-      while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-        
-        if (value) {
-          const chunk = decoder.decode(value, { stream: !done });
-          parser.feed(chunk);
-        }
-      }
-
-      // Create final assistant message
-      const assistantMessage: ChatMessageModel = {
-        id: assistantMessageId,
-        role: "assistant",
-        content: fullContent,
-        name: "Assistant Réclamation",
-        createdAt: new Date(),
-        isDeleted: false,
-        threadId: "complaints-thread",
-        type: "CHAT_MESSAGE",
-        userId: "",
-      };
-
-      this.addToMessages(assistantMessage);
-
     } catch (error) {
-      console.error("Error submitting complaint:", error);
-      this.suggestion = "Erreur lors de la génération de la réponse. Veuillez réessayer.";
+      console.error("Error:", error);
+      this.error = error instanceof Error ? error.message : "Unknown error";
     } finally {
       this.loading = "idle";
+    }
+  }
+
+  private async handleStreamingResponse(response: Response) {
+    const reader = response.body?.getReader();
+    if (!reader) throw new Error("No response body");
+
+    const decoder = new TextDecoder();
+    let fullContent = "";
+
+    const parser = createParser((event: ParsedEvent | ReconnectInterval) => {
+      if (event.type === "event" && event.data !== "[DONE]") {
+        try {
+          const data = JSON.parse(event.data);
+          const content = data.choices?.[0]?.delta?.content || 
+                         data.response || 
+                         data.content || 
+                         "";
+          if (content) {
+            fullContent += content;
+            this.suggestion = fullContent;
+          }
+        } catch {
+          // If not JSON, treat as plain text
+          fullContent += event.data;
+          this.suggestion = fullContent;
+        }
+      }
+    });
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        parser.feed(decoder.decode(value));
+      }
+    } finally {
+      reader.releaseLock();
     }
   }
 }
 
 export const complaintsStore = proxy(new ComplaintsState());
-export const useComplaints = () => useSnapshot(complaintsStore)
+export const useComplaints = () => useSnapshot(complaintsStore);

@@ -38,7 +38,7 @@ export const ChatMenu: FC<ChatMenuProps> = (props) => {
 export const GroupChatThreadByType = (menuItems: Array<ChatThreadModel>) => {
   const groupedMenuItems: Array<MenuItemsGroup> = [];
 
-  // todays date
+  // today's date
   const today = new Date();
   // 7 days ago
   const sevenDaysAgo = new Date(today);
@@ -48,20 +48,21 @@ export const GroupChatThreadByType = (menuItems: Array<ChatThreadModel>) => {
     if (el.bookmarked) {
       groupedMenuItems.push({
         ...el,
-        groupName: "Bookmarked",
+        groupName: "Favoris",
       });
     } else if (new Date(el.lastMessageAt) > sevenDaysAgo) {
       groupedMenuItems.push({
         ...el,
-        groupName: "Past 7 days",
+        groupName: "7 derniers jours",
       });
     } else {
       groupedMenuItems.push({
         ...el,
-        groupName: "Previous",
+        groupName: "Anciens",
       });
     }
   });
+
   const menuItemsGrouped = groupedMenuItems.reduce((acc, el) => {
     const key = el.groupName;
     if (!acc[key]) {
@@ -72,9 +73,9 @@ export const GroupChatThreadByType = (menuItems: Array<ChatThreadModel>) => {
   }, {} as Record<MenuItemsGroupName, Array<MenuItemsGroup>>);
 
   const records: Record<MenuItemsGroupName, Array<MenuItemsGroup>> = {
-    Bookmarked: menuItemsGrouped["Bookmarked"]?.sort(sortByTimestamp),
-    "Past 7 days": menuItemsGrouped["Past 7 days"]?.sort(sortByTimestamp),
-    Previous: menuItemsGrouped["Previous"]?.sort(sortByTimestamp),
+    Favoris: menuItemsGrouped["Favoris"]?.sort(sortByTimestamp),
+    "7 derniers jours": menuItemsGrouped["7 derniers jours"]?.sort(sortByTimestamp),
+    Anciens: menuItemsGrouped["Anciens"]?.sort(sortByTimestamp),
   };
 
   return records;

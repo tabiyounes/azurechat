@@ -8,11 +8,11 @@ export const ReportingHero = () => {
       title={
         <>
           <Sheet size={36} strokeWidth={1.5} />
-          Chat Report
+          Rapport de Chat
         </>
       }
       description={
-        "Administration view for monitoring conversation history for all users"
+        "Vue d'administration pour surveiller l'historique des conversations de tous les utilisateurs"
       }
     ></Hero>
   );
