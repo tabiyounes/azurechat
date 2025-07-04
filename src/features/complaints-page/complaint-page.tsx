@@ -5,7 +5,7 @@ import { ComplaintHero } from "./complaint-hero";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Label } from "@/features/ui/label";
-import { ImageInput } from "@/features/ui/chat/chat-input-area/image-input";
+import { ImageInput } from "@/features/ui/complaint/complaint-input-area/image-input";
 import { complaintsStore, useComplaints } from "@/features/complaints-page/complaint-store";
 
 interface ComplaintPageProps {}
@@ -18,7 +18,7 @@ export const ComplaintPage: FC<ComplaintPageProps> = () => {
     <ScrollArea className="flex-1">
       <main className="flex flex-col flex-1">
         <ComplaintHero />
-        <form 
+        <form
           ref={formRef}
           onSubmit={async (e) => {
             e.preventDefault();
@@ -76,10 +76,7 @@ export const ComplaintPage: FC<ComplaintPageProps> = () => {
                 </div>
 
                 {/* Submit button */}
-                <Button 
-                  type="submit"
-                  disabled={loading === "loading"}
-                >
+                <Button type="submit" disabled={loading === "loading"}>
                   {loading === "loading" ? "Envoi..." : "Soumettre"}
                 </Button>
               </div>

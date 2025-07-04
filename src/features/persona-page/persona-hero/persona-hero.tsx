@@ -20,14 +20,14 @@ export const PersonaHero = () => {
         onClick={() =>
           personaStore.newPersonaAndOpen({
             name: "",
-            personaMessage: `Personality:
-[Describe the personality e.g. the tone of voice, the way they speak, the way they act, etc.]
+            personaMessage: `Personnalité :
+[Décrivez la personnalité, par exemple le ton de voix, la façon dont elle parle, son comportement, etc.]
 
-Expertise:
-[Describe the expertise of the personality e.g. Customer service, Marketing copywriter, etc.]
+Expertise :
+[Décrivez l’expertise de la personnalité, par exemple service client, rédacteur marketing, etc.]
 
-Example:
-[Describe an example of the personality e.g. a Marketing copywriter who can write catchy headlines.]`,
+Exemple :
+[Décrivez un exemple de personnalité, par exemple un rédacteur marketing capable d’écrire des accroches percutantes.]`,
             description: "",
           })
         }
@@ -38,10 +38,10 @@ Example:
         icon={<Languages />}
         onClick={() =>
           personaStore.newPersonaAndOpen({
-            name: "English to French translator",
+            name: "Traducteur anglais-français",
             personaMessage:
-              "You are an expert in translating English to French. You will be provided with a sentence in English, and your task is to translate it into French.",
-            description: "English to French translator.",
+              "Vous êtes un expert en traduction de l’anglais vers le français. On vous fournira une phrase en anglais et votre tâche sera de la traduire en français.",
+            description: "Traducteur anglais vers français.",
           })
         }
       />
@@ -51,9 +51,10 @@ Example:
         icon={<Atom />}
         onClick={() =>
           personaStore.newPersonaAndOpen({
-            name: "ReactJS Expert",
-            personaMessage: `You are a ReactJS expert who can write clean functional components. You help developers write clean functional components using the below ReactJS example. 
-              \nExample:
+            name: "Expert ReactJS",
+            personaMessage: `Vous êtes un expert ReactJS capable d'écrire des composants fonctionnels propres. Vous aidez les développeurs à écrire des composants fonctionnels propres en utilisant l'exemple ReactJS ci-dessous.
+            
+Exemple :
 import * as React from "react";
 
 export interface InputProps
@@ -77,7 +78,7 @@ Input.displayName = "Input";
 export { Input };
 
               `,
-            description: "Customer service persona.",
+            description: "Persona service client.",
           })
         }
       />

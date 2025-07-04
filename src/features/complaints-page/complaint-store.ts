@@ -3,8 +3,8 @@ import { ParsedEvent, ReconnectInterval, createParser } from "eventsource-parser
 
 class ComplaintsState {
   public loading: "idle" | "loading" = "idle";
-  public suggestion: string = "";
-  public error: string = "";
+  public suggestion = "";
+  public error = "";
 
   public async submitComplaint(formData: FormData) {
     this.loading = "loading";
@@ -12,28 +12,38 @@ class ComplaintsState {
     this.error = "";
 
     try {
+      // Re‑package payload so we only send one field ('content') + optional image
+      const payload = {
+        causeTechnique: formData.get("causeTechnique"),
+        actionCorrective: formData.get("actionCorrective"),
+        actionClient: formData.get("actionClient"),
+      };
+
+      const imageBase64 = formData.get("image-base64") as string | null;
+
+      const sendData = new FormData();
+      sendData.append("content", JSON.stringify(payload));
+      if (imageBase64) sendData.append("image-base64", imageBase64);
+
       const response = await fetch("/api/complaint", {
         method: "POST",
-        body: formData,
+        body: sendData,
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        throw new Error(
-          errorData?.message || 
-          `HTTP error! status: ${response.status}`
-        );
+        throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
       }
 
       const contentType = response.headers.get("content-type");
-      if (contentType?.includes("application/json")) {
+
+      if (contentType?.includes("text/event-stream")) {
+        await this.handleStreamingResponse(response);
+      } else if (contentType?.includes("application/json")) {
         const data = await response.json();
         this.suggestion = data.response || data.message || data.content || "";
-      } else if (contentType?.includes("text/event-stream")) {
-        await this.handleStreamingResponse(response);
       } else {
-        const text = await response.text();
-        this.suggestion = text;
+        this.suggestion = await response.text();
       }
     } catch (error) {
       console.error("Error:", error);
@@ -54,16 +64,16 @@ class ComplaintsState {
       if (event.type === "event" && event.data !== "[DONE]") {
         try {
           const data = JSON.parse(event.data);
-          const content = data.choices?.[0]?.delta?.content || 
-                         data.response || 
-                         data.content || 
-                         "";
+          const content =
+            data.choices?.[0]?.delta?.content ||
+            data.response ||
+            data.content ||
+            "";
           if (content) {
             fullContent += content;
             this.suggestion = fullContent;
           }
         } catch {
-          // If not JSON, treat as plain text
           fullContent += event.data;
           this.suggestion = fullContent;
         }

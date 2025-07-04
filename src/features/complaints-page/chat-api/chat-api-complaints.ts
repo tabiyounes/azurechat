@@ -25,7 +25,7 @@ Votre réponse doit être:
 
 export const ChatApiComplaints = async (props: {
   userMessage: string;
-  image?: string; // Made optional
+  image?: string;
   signal: AbortSignal;
 }): Promise<ChatCompletionStreamingRunner> => {
   const { userMessage, image, signal } = props;
@@ -37,16 +37,16 @@ export const ChatApiComplaints = async (props: {
   // Build messages array conditionally
   const messages = [
     {
-      role: "system" as const,
+      role: "system",
       content: COMPLAINT_SYSTEM_PROMPT,
     },
     {
-      role: "user" as const,
+      role: "user",
       content: image && image.trim()
         ? [
-            { type: "text" as const, text: userMessage },
+            { type: "text", text: userMessage },
             {
-              type: "image_url" as const,
+              type: "image_url",
               image_url: {
                 url: image,
               },
