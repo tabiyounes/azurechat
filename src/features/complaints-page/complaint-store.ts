@@ -107,6 +107,30 @@ class ComplaintsState {
         if (event.type === "event") {
           const responseType = JSON.parse(event.data) as AzureChatCompletion;
           switch (responseType.type) {
+            case "functionCall":
+              const mappedFunction: ChatMessageModel = {
+                id: uniqueId(),
+                content: responseType.response.arguments,
+                name: responseType.response.name,
+                role: "function",
+                type: "CHAT_MESSAGE",
+                userId: "",
+                multiModalImage: "",
+              };
+              this.addToMessages(mappedFunction);
+              break;
+            case "functionCallResult":
+              const mappedFunctionResult: ChatMessageModel = {
+                id: uniqueId(),
+                content: responseType.response,
+                name: "tool",
+                role: "tool",
+                type: "CHAT_MESSAGE",
+                userId: "",
+                multiModalImage: "",
+              };
+              this.addToMessages(mappedFunctionResult);
+                          break;
             case "content":
               const mappedContent: ChatMessageModel = {
                 id: uniqueId(),
