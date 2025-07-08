@@ -22,8 +22,7 @@ export const ComplaintPage: FC<ComplaintPageProps> = () => {
           ref={formRef}
           onSubmit={async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.currentTarget);
-            await complaintsStore.submitComplaint(formData);
+            await complaintsStore.submitComplaint(e);
           }}
         >
           <div className="container max-w-6xl py-6 flex flex-col md:flex-row gap-6">

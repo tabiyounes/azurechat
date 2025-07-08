@@ -1,93 +1,194 @@
 import { proxy, useSnapshot } from "valtio";
 import { ParsedEvent, ReconnectInterval, createParser } from "eventsource-parser";
+import { FormEvent } from "react";
+import { ChatMessageModel } from "./complaints-services/models";
+import { uniqueId } from "@/features/common/util";
+import { InputImageStore } from "../ui/complaint/complaint-input-area/input-image-store";
+import { AzureChatCompletion } from "./complaints-services/models";
+import { AI_NAME } from "@/features/theme/theme-config";
+import { showError } from "@/features/globals/global-message-store";
+
+let abortController: AbortController = new AbortController();
+
+type chatStatus = "idle" | "loading" | "file upload";
 
 class ComplaintsState {
+  public messages: Array<ChatMessageModel> = [];
   public loading: "idle" | "loading" = "idle";
   public suggestion = "";
   public error = "";
+  public input: string = "";
+  public userName: string = "";
 
-  public async submitComplaint(formData: FormData) {
+  private addToMessages(message: ChatMessageModel) {
+    const currentMessage = this.messages.find((el) => el.id === message.id);
+    if (currentMessage) {
+      currentMessage.content = message.content;
+    } else {
+      this.messages.push(message);
+    }
+  }
+
+  private removeMessage(id: string) {
+    const index = this.messages.findIndex((el) => el.id === id);
+    if (index > -1) {
+      this.messages.splice(index, 1);
+    }
+  }
+
+  private reset() {
+    this.input = "";
+    InputImageStore.Reset();
+  }
+
+  public async submitComplaint(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (this.loading !== "idle") {
+      return;
+    }
+
+    const formData = new FormData(e.currentTarget);
+
+    const payload = {
+      causeTechnique: formData.get("causeTechnique"),
+      actionCorrective: formData.get("actionCorrective"),
+      actionClient: formData.get("actionClient"),
+    };
+
+
+    let image = formData.get("image-base64") as string;
+    const finalFormData = new FormData();
+    finalFormData.append("content", JSON.stringify(payload));
+    if (image) finalFormData.append("image-base64", image);
+
+    this.chat(finalFormData);
+  }
+
+  private async chat(formData: FormData) {
     this.loading = "loading";
     this.suggestion = "";
     this.error = "";
 
+    const controller = new AbortController();
+    abortController = controller;
+
+    // Create user message ID upfront
+    const userMessageId = uniqueId();
+
     try {
-      // Re‑package payload so we only send one field ('content') + optional image
-      const payload = {
-        causeTechnique: formData.get("causeTechnique"),
-        actionCorrective: formData.get("actionCorrective"),
-        actionClient: formData.get("actionClient"),
-      };
-
-      const imageBase64 = formData.get("image-base64") as string | null;
-
-      const sendData = new FormData();
-      sendData.append("content", JSON.stringify(payload));
-      if (imageBase64) sendData.append("image-base64", imageBase64);
-
       const response = await fetch("/api/complaint", {
         method: "POST",
-        body: sendData,
+        body: formData,
+        signal: controller.signal,
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const contentType = response.headers.get("content-type");
+      // Build user message content from the form data
+      const content = formData.get("content") as string;
+      const parsedContent = JSON.parse(content);
+      const userMessageContent = this.buildUserMessageContent(parsedContent);
 
-      if (contentType?.includes("text/event-stream")) {
-        await this.handleStreamingResponse(response);
-      } else if (contentType?.includes("application/json")) {
-        const data = await response.json();
-        this.suggestion = data.response || data.message || data.content || "";
-      } else {
-        this.suggestion = await response.text();
+      const newUserMessage: ChatMessageModel = {
+        id: userMessageId,
+        role: "user",
+        content: userMessageContent,
+        name: this.userName,
+        multiModalImage: formData.get("image-base64") as string || "",
+        type: "CHAT_MESSAGE",
+        userId: "",
+      };
+
+      this.messages.push(newUserMessage);
+
+      const onParse = (event: ParsedEvent | ReconnectInterval) => {
+        if (event.type === "event") {
+          const responseType = JSON.parse(event.data) as AzureChatCompletion;
+          switch (responseType.type) {
+            case "content":
+              const mappedContent: ChatMessageModel = {
+                id: responseType.response.id,
+                content: responseType.response.choices[0].message.content || "",
+                name: AI_NAME,
+                role: "assistant",
+                type: "CHAT_MESSAGE",
+                userId: "",
+                multiModalImage: "",
+              };
+
+              this.addToMessages(mappedContent);
+              this.suggestion = mappedContent.content;
+              break;
+
+            case "abort":
+              this.removeMessage(userMessageId);
+              this.loading = "idle";
+              break;
+
+            case "error":
+              showError(responseType.response);
+              this.error = responseType.response;
+              this.removeMessage(userMessageId);
+              this.loading = "idle";
+              break;
+
+            default:
+              break;
+          }
+        }
+      };
+
+      if (response.body) {
+        const parser = createParser(onParse);
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let done = false;
+
+        while (!done) {
+          const { value, done: doneReading } = await reader.read();
+          done = doneReading;
+
+          const chunkValue = decoder.decode(value);
+          parser.feed(chunkValue);
+        }
+
+        this.loading = "idle";
       }
     } catch (error) {
-      console.error("Error:", error);
-      this.error = error instanceof Error ? error.message : "Unknown error";
-    } finally {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      showError(errorMessage);
+      this.error = errorMessage;
+      this.removeMessage(userMessageId);
       this.loading = "idle";
+    } finally {
+      this.reset();
     }
   }
 
-  private async handleStreamingResponse(response: Response) {
-    const reader = response.body?.getReader();
-    if (!reader) throw new Error("No response body");
+  private buildUserMessageContent(payload: any): string {
+    let content = "Réclamation:\n";
+    
+    if (payload.causeTechnique) {
+      content += `\nAction Technique: ${payload.causeTechnique}`;
+    }
+    
+    if (payload.actionCorrective) {
+      content += `\nAction Corrective: ${payload.actionCorrective}`;
+    }
+    
+    if (payload.actionClient) {
+      content += `\nAction Client: ${payload.actionClient}`;
+    }
 
-    const decoder = new TextDecoder();
-    let fullContent = "";
+    return content;
+  }
 
-    const parser = createParser((event: ParsedEvent | ReconnectInterval) => {
-      if (event.type === "event" && event.data !== "[DONE]") {
-        try {
-          const data = JSON.parse(event.data);
-          const content =
-            data.choices?.[0]?.delta?.content ||
-            data.response ||
-            data.content ||
-            "";
-          if (content) {
-            fullContent += content;
-            this.suggestion = fullContent;
-          }
-        } catch {
-          fullContent += event.data;
-          this.suggestion = fullContent;
-        }
-      }
-    });
-
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        parser.feed(decoder.decode(value));
-      }
-    } finally {
-      reader.releaseLock();
+  public abortRequest() {
+    if (abortController) {
+      abortController.abort();
+      this.loading = "idle";
     }
   }
 }
