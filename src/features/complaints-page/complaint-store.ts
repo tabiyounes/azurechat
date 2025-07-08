@@ -109,7 +109,7 @@ class ComplaintsState {
           switch (responseType.type) {
             case "content":
               const mappedContent: ChatMessageModel = {
-                id: responseType.response.id,
+                id: uniqueId(),
                 content: responseType.response.choices[0].message.content || "",
                 name: AI_NAME,
                 role: "assistant",
@@ -119,7 +119,7 @@ class ComplaintsState {
               };
 
               this.addToMessages(mappedContent);
-              this.suggestion = mappedContent.content;
+              this.suggestion = mappedContent.content;;
               break;
 
             case "abort":
