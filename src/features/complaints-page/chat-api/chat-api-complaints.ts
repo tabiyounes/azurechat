@@ -91,7 +91,7 @@ export const ChatApiComplaints = async (props: {
         },
         {
           role: "user",
-          content: [          // ❸ always multimodal
+          content: [
             { type: "text", text: userMessage },
             {
               type: "image_url",

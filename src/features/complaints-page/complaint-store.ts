@@ -40,6 +40,17 @@ class ComplaintsState {
     this.input = "";
     InputImageStore.Reset();
   }
+  
+  public resetForm(form: HTMLFormElement | null) {
+  this.suggestion = "";
+  this.error = "";
+  this.input = "";
+  InputImageStore.Reset();
+  if (form) {
+    form.reset();
+  }
+}
+
 
   public async submitComplaint(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -57,6 +68,11 @@ class ComplaintsState {
 
 
     let image = formData.get("image-base64") as string;
+    if (!image) {
+      this.error = "Veuillez joindre une image avant de soumettre.";
+      showError(this.error);
+      return;
+    }
     const finalFormData = new FormData();
     finalFormData.append("content", JSON.stringify(payload));
     if (image) finalFormData.append("image-base64", image);
@@ -186,8 +202,6 @@ class ComplaintsState {
       this.error = errorMessage;
       this.removeMessage(userMessageId);
       this.loading = "idle";
-    } finally {
-      this.reset();
     }
   }
 

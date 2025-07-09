@@ -74,10 +74,20 @@ export const ComplaintPage: FC<ComplaintPageProps> = () => {
                   />
                 </div>
 
-                {/* Submit button */}
-                <Button type="submit" disabled={loading === "loading"}>
+                <div className="flex gap-4 items-center">
+                <Button type="submit" disabled={loading === "loading"} className="flex-1">
                   {loading === "loading" ? "Envoi..." : "Soumettre"}
                 </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-1/3"
+                  onClick={() => complaintsStore.resetForm(formRef.current)}
+                  disabled={loading === "loading"}
+                >
+                  Nouveau
+                </Button>
+              </div>
               </div>
             </div>
 
