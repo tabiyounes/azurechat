@@ -58,11 +58,11 @@ export const MainMenu = async () => {
             </MenuLink>
           </MenuItem>
                         
-          <MenuItem tooltip="Gen photo chien">
+          {/* <MenuItem tooltip="Gen photo chien">
             <MenuLink href="/dog-generator" ariaLabel="Aller à la page de génération de chiens">
               <PawPrint {...menuIconProps} />
             </MenuLink>
-          </MenuItem>
+          </MenuItem> */}
           {user.isAdmin && (
             <>
               <MenuItem tooltip="Extensions">
