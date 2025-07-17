@@ -83,7 +83,8 @@ export const ChatApiComplaints = async (props: {
     {
       model: "",   
       stream: true,
-      max_tokens: 4096,
+      max_tokens: 1000,
+      temperature: 0.7,
       messages: [
         {
           role: "system",
@@ -92,7 +93,7 @@ export const ChatApiComplaints = async (props: {
         {
           role: "user",
           content: [
-            { type: "text", text: userMessage },
+            { type: "text", text: "Réclamation client en pièce jointe.\n\nFormulaire expert : " + userMessage },
             {
               type: "image_url",
               image_url: { url: image },

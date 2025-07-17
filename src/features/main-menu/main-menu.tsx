@@ -14,6 +14,7 @@ import {
   Sheet,
   VenetianMask,
   FilePen,
+  PawPrint,
 } from "lucide-react";
 import { getCurrentUser } from "../auth-page/helpers";
 import { MenuLink } from "./menu-link";
@@ -54,6 +55,12 @@ export const MainMenu = async () => {
           <MenuItem tooltip="Réclamations">
             <MenuLink href="/complaints" ariaLabel="Aller à la page des réclamations">
               <FilePen {...menuIconProps} />
+            </MenuLink>
+          </MenuItem>
+                        
+          <MenuItem tooltip="Gen photo chien">
+            <MenuLink href="/dog-generator" ariaLabel="Aller à la page de génération de chiens">
+              <PawPrint {...menuIconProps} />
             </MenuLink>
           </MenuItem>
           {user.isAdmin && (
