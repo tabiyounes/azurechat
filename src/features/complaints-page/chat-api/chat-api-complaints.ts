@@ -93,7 +93,7 @@ export const ChatApiComplaints = async (props: {
         {
           role: "user",
           content: [
-            { type: "text", text: "Réclamation client en pièce jointe.\n\nFormulaire expert : " + userMessage },
+            { type: "text", text: "Réclamation client en pièce jointe." + JSON.stringify(userMessage, null, 2) },
             {
               type: "image_url",
               image_url: { url: image },

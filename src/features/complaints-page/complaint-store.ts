@@ -84,7 +84,7 @@ class ComplaintsState {
     this.loading = "loading";
     this.suggestion = "";
     this.error = "";
-
+    abortController = new AbortController(); 
     const controller = new AbortController();
     abortController = controller;
 
@@ -206,22 +206,12 @@ class ComplaintsState {
   }
 
   private buildUserMessageContent(payload: any): string {
-    let content = "Réclamation:\n";
-    
-    if (payload.causeTechnique) {
-      content += `\nAction Technique: ${payload.causeTechnique}`;
-    }
-    
-    if (payload.actionCorrective) {
-      content += `\nAction Corrective: ${payload.actionCorrective}`;
-    }
-    
-    if (payload.actionClient) {
-      content += `\nAction Client: ${payload.actionClient}`;
-    }
-
-    return content;
+  return `Formulaire expert :
+  Cause technique identifiée : ${payload.causeTechnique}
+  Action corrective réalisée : ${payload.actionCorrective}
+  Action attendue du client : ${payload.actionClient || "Non précisé"}`;
   }
+
 
   public abortRequest() {
     if (abortController) {
