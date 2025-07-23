@@ -13,6 +13,7 @@ export interface ComplaintData {
   causeTechnique: string;
   actionCorrective: string;
   actionClient?: string;
+  image : string;
 }
 class ComplaintsState {
   public messages: Array<ChatMessageModel> = [];
@@ -54,31 +55,6 @@ class ComplaintsState {
 }
 
 
-public async submitComplaint(e: FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-  if (this.loading !== "idle") return;
-
-  const formData = new FormData(e.currentTarget);
-  const image = formData.get("image-base64") as string;
-
-  if (!image) {
-    this.error = "Veuillez joindre une image avant de soumettre.";
-    showError(this.error);
-    return;
-  }
-
-  const payload = {
-    causeTechnique: formData.get("causeTechnique") as string,
-    actionCorrective: formData.get("actionCorrective") as string,
-    actionClient: formData.get("actionClient") as string || undefined,
-  };
-
-  const apiFormData = new FormData();
-  apiFormData.append("content", JSON.stringify(payload));
-  apiFormData.append("image-base64", image);
-
-  this.chat(apiFormData);
-}
 
   private async chat(formData: FormData) {
     this.loading = "loading";
@@ -203,6 +179,37 @@ public async submitComplaint(e: FormEvent<HTMLFormElement>) {
       this.loading = "idle";
     }
   }
+
+  public async submitComplaint(e: FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+  if (this.loading !== "idle") return;
+
+  const formData = new FormData(e.currentTarget);
+  const image = formData.get("image-base64") as string;
+
+  if (!image) {
+    this.error = "Veuillez joindre une image avant de soumettre.";
+    showError(this.error);
+    return;
+  }
+
+  const payload = `
+    Voici le formulaire de l'expert :
+    - Cause technique : ${formData.get("causeTechnique")}
+    - Action corrective : ${formData.get("actionCorrective") }
+    ${formData.get("actionClient") ? `- Action client : ${formData.get("actionClient")}` : ""}
+    `.trim();
+
+  const apiFormData = new FormData();
+  const body = JSON.stringify({
+      message: payload,
+  });
+  apiFormData.append("content", body);
+  apiFormData.append("image-base64", image);
+
+  this.chat(apiFormData);
+}
+
 
   public abortRequest() {
     if (abortController) {

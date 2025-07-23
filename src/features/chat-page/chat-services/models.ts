@@ -42,6 +42,11 @@ export interface UserPrompt {
   multimodalImage: string;
 }
 
+export interface UserPromptComplaint{
+  message:string;
+  multimodalImage: string;
+}
+
 export interface ChatDocumentModel {
   id: string;
   name: string;

@@ -2,32 +2,17 @@
 import "server-only";
 
 import { ChatApiComplaints } from "@/features/complaints-page/chat-api/chat-api-complaints";
+import { UserPromptComplaint } from "@/features/chat-page/chat-services/models";
 import { ComplaintOpenAIStream } from "./complaint-openai-stream";
 
-// Define the expected complaint data structure
-interface ComplaintAPIProps {
-  causeTechnique: string;
-  actionCorrective: string;
-  actionClient?: string;
-  multimodalImage: string;
-}
-
 export const ComplaintAPIEntry = async (
-  props: ComplaintAPIProps,  // Changed from UserPrompt to specific complaint type
+  props: UserPromptComplaint,
   signal: AbortSignal
 ): Promise<Response> => {
   try {
-    if (!props.multimodalImage) {
-      throw new Error("An image is required for complaint processing");
-    }
-
-    // Call your complaint API with the proper data structure
+    // Call your complaint API to get the runner
     const runner = await ChatApiComplaints({
-      complaintData: {
-        causeTechnique: props.causeTechnique,
-        actionCorrective: props.actionCorrective,
-        actionClient: props.actionClient
-      },
+      userMessage: props.message,
       image: props.multimodalImage,
       signal,
     });
@@ -44,8 +29,7 @@ export const ComplaintAPIEntry = async (
     });
   } catch (error) {
     console.error("Error in ComplaintAPIEntry:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

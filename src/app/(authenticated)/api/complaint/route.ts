@@ -1,5 +1,5 @@
 import { ComplaintAPIEntry } from "@/features/complaints-page/chat-api/chat-api-entry-complaints";
-import { UserPrompt } from "@/features/chat-page/chat-services/models";
+import { UserPromptComplaint } from "@/features/chat-page/chat-services/models";
 
 export async function POST(req: Request) {
   try {
@@ -30,9 +30,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const userPrompt: UserPrompt = {
+    const userPrompt: UserPromptComplaint = {
       ...parsedContent,
-      multimodalImage: multimodalImage || "",
+      multimodalImage: multimodalImage,
     };
 
     return await ComplaintAPIEntry(userPrompt, req.signal);

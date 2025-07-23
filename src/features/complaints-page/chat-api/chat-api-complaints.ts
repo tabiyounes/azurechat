@@ -3,7 +3,6 @@ import "server-only";
 
 import { OpenAIInstance } from "@/features/common/services/openai";
 import { ChatCompletionStreamingRunner } from "openai/resources/beta/chat/completions";
-import { ComplaintData } from "@/features/complaints-page/complaint-store";
 
 // Define your dedicated complaint system prompt here
 const COMPLAINT_SYSTEM_PROMPT = `
@@ -91,12 +90,12 @@ Ton rôle est de TRADUIRE fidèlement l'expertise technique en langage client cl
 
 `;
 
-export const ChatApiComplaints = async (props: {
-  complaintData: ComplaintData; // Change from userMessage
+export const ChatApiComplaints =  (props: {
+  userMessage: string;
   image: string;
   signal: AbortSignal;
-}): Promise<ChatCompletionStreamingRunner> => {
-  const { complaintData, image, signal } = props;
+}): ChatCompletionStreamingRunner => {
+  const { userMessage, image, signal } = props;
 
   if (!image?.trim()) {
     throw new Error("An image is required for this endpoint.");
@@ -106,7 +105,7 @@ export const ChatApiComplaints = async (props: {
 
   return openAI.beta.chat.completions.stream(
     {
-      model: "",
+      model: "",   
       stream: true,
       max_tokens: 2000,
       temperature: 0.5,
@@ -118,23 +117,7 @@ export const ChatApiComplaints = async (props: {
         {
           role: "user",
           content: [
-            {
-              type: "text",
-              text: `
-        Voici une nouvelle réclamation client à traiter.
-
-        ACTION TECHNIQUE :
-        ${complaintData.causeTechnique}
-
-        ACTION CORRECTIVE :
-        ${complaintData.actionCorrective}
-
-        ACTION CLIENT :
-        ${complaintData.actionClient || "Non précisé"}
-
-        L'image jointe est fournie à des fins de contexte uniquement.
-        `.trim(),
-            },
+            { type: "text", text: "Réclamation client en pièce jointe." + userMessage },
             {
               type: "image_url",
               image_url: { url: image },
