@@ -1,3 +1,4 @@
+"use client";
 import { AddExtension } from "@/features/extensions-page/add-extension/add-new-extension";
 import { ExtensionCard } from "@/features/extensions-page/extension-card/extension-card";
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
@@ -8,7 +9,8 @@ import { Hero } from "@/features/ui/hero";
 import { ScrollArea } from "@/features/ui/scroll-area";
 import Image from "next/image";
 import { FC } from "react";
-
+import {MessageCircle} from "lucide-react";
+import { CreateChatAndRedirect } from "../chat-page/chat-services/chat-thread-service"
 interface ChatPersonaProps {
   personas: PersonaModel[];
   extensions: ExtensionModel[];
