@@ -16,9 +16,10 @@ import { ThemeToggle } from "./theme-toggle";
 import Link from "next/link";
 import { Mail } from "lucide-react";
 
-const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
 export const UserProfile = () => {
   const { data: session } = useSession();
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   return (
     <DropdownMenu>
