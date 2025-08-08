@@ -32,8 +32,6 @@ export const UserProfile = () => {
         console.error("Failed to fetch admin email:", err);
       });
   }, []);
-  console.log("heree", adminEmail)
-
 
   return (
     <DropdownMenu>
@@ -71,14 +69,18 @@ export const UserProfile = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link
-            href={`mailto:${adminEmail}?subject=Feedback&body=Bonjour, voici mon retour :`}
-            className="flex gap-2"
-          >
-            <Mail {...menuIconProps} size={18} />
-            <span>Envoyer un feedback</span>
-          </Link>
+        <DropdownMenuItem
+          className="flex gap-2"
+          onClick={() => {
+            if (adminEmail) {
+              const subject = encodeURIComponent("Feedback");
+              const body = encodeURIComponent("Bonjour, voici mon retour :");
+              window.location.href = `mailto:${adminEmail}?subject=${subject}&body=${body}`;
+            }
+          }}
+        >
+          <Mail {...menuIconProps} size={18} />
+          <span>Envoyer un feedback</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
