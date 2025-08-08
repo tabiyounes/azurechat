@@ -15,11 +15,25 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 import { ThemeToggle } from "./theme-toggle";
 import Link from "next/link";
 import { Mail } from "lucide-react";
+import { useEffect, useState } from "react";
 
 
 export const UserProfile = () => {
   const { data: session } = useSession();
-  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+  const [adminEmail, setAdminEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/admin-email")
+      .then((res) => res.json())
+      .then((data) => {
+        setAdminEmail(data.adminEmail);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch admin email:", err);
+      });
+  }, []);
+  console.log("heree", adminEmail)
+
 
   return (
     <DropdownMenu>

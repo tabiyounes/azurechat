@@ -7,8 +7,11 @@ import { hashValue } from "./helpers";
 import { image } from "@markdoc/markdoc/dist/src/schema";
 import { access } from "fs";
 
+
+
 const configureIdentityProvider = () => {
   const providers: Array<Provider> = [];
+
 
   const adminEmails = process.env.ADMIN_EMAIL_ADDRESS?.split(",").map((email) =>
     email.toLowerCase().trim()
