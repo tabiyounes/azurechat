@@ -6,14 +6,19 @@ declare module "next-auth" {
   interface Session {
     user: {
       isAdmin: boolean;
+      roles: string[]; // ✅ Add this line
     } & DefaultSession["user"];
-  }
-
-  interface Token {
-    isAdmin: boolean;
   }
 
   interface User {
     isAdmin: boolean;
+    roles: string[]; 
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    isAdmin: boolean;
+    roles: string[];
   }
 }

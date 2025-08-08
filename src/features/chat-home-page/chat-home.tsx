@@ -16,7 +16,8 @@ import { CreateChatAndRedirect } from "../chat-page/chat-services/chat-thread-se
 interface ChatPersonaProps {
   personas: PersonaModel[];
   extensions: ExtensionModel[];
-  user?: { isAdmin?: boolean };
+  user?: { isAdmin?: boolean,
+    roles?: string[]; };
 }
 
 export const ChatHome: FC<ChatPersonaProps> = (props) => {
@@ -67,13 +68,15 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
                 description="Créer et gérer les profils IA"
                 button_title = "Ouvrir"
               />
-              <HomeActionCard
-                title="Réclamations"
-                icon={FilePen}
-                href="/complaints"
-                description="Formulez des réponses professionnelles et adaptées aux réclamations clients"
-                button_title = "Répondre"
-              />
+              {user?.roles?.includes("poc") && (
+                <HomeActionCard
+                  title="Réclamations"
+                  icon={FilePen}
+                  href="/complaints"
+                  description="Formulez des réponses professionnelles et adaptées aux réclamations clients"
+                  button_title="Répondre"
+                />
+              )}
 
             </div>
           </div>

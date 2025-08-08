@@ -45,12 +45,30 @@ const configureIdentityProvider = () => {
         tenantId: process.env.AZURE_AD_TENANT_ID!,
         authorization: {
           params: {
-            scope: "openid profile User.Read", 
+            scope: "openid profile User.Read",
           },
         },
         async profile(profile, tokens) {
           const email = profile.email || profile.preferred_username || "";
-          const image = await fetchProfilePicture(`https://graph.microsoft.com/v1.0/me/photos/48x48/$value`, tokens.access_token);
+          const image = await fetchProfilePicture(
+            `https://graph.microsoft.com/v1.0/me/photos/48x48/$value`,
+            tokens.access_token
+          );
+          let roles: string[] = [];
+          try {
+            if (tokens.id_token) {
+              const tokenParts = tokens.id_token.split(".");
+              if (tokenParts.length >= 2) {
+                const idTokenPayload = JSON.parse(
+                  Buffer.from(tokenParts[1], "base64").toString()
+                );
+                roles = idTokenPayload.roles || [];
+              }
+            }
+          } catch (err) {
+            console.error("Failed to parse id_token for roles:", err);
+          }
+
           const newProfile = {
             ...profile,
             email,
@@ -58,6 +76,7 @@ const configureIdentityProvider = () => {
             isAdmin:
               adminEmails?.includes(profile.email?.toLowerCase()) ||
               adminEmails?.includes(profile.preferred_username?.toLowerCase()),
+            roles,
             image: image,
           };
           console.log("Azure AD profile:", newProfile);
@@ -67,10 +86,6 @@ const configureIdentityProvider = () => {
     );
   }
 
-  // If we're in local dev, add a basic credential provider option as well
-  // (Useful when a dev doesn't have access to create app registration in their tenant)
-  // This currently takes any username and makes a user with it, ignores password
-  // Refer to: https://next-auth.js.org/configuration/providers/credentials
   if (process.env.NODE_ENV === "development") {
     providers.push(
       CredentialsProvider({
@@ -80,9 +95,6 @@ const configureIdentityProvider = () => {
           password: { label: "Password", type: "password" },
         },
         async authorize(credentials, req): Promise<any> {
-          // You can put logic here to validate the credentials and return a user.
-          // We're going to take any username and make a new user with it
-          // Create the id as the hash of the email as per userHashedId (helpers.ts)
           const username = credentials?.username || "dev";
           const email = username + "@localhost";
           const user = {
@@ -91,12 +103,9 @@ const configureIdentityProvider = () => {
             email: email,
             isAdmin: adminEmails?.includes(email),
             image: "",
+            roles: [],
           };
-          console.log(
-            "=== DEV USER LOGGED IN:\n",
-            JSON.stringify(user, null, 2,
-            )
-          );
+          console.log("=== DEV USER LOGGED IN:\n", JSON.stringify(user, null, 2));
           return user;
         },
       })
@@ -108,7 +117,7 @@ const configureIdentityProvider = () => {
 
 export const fetchProfilePicture = async (profilePictureUrl: string, accessToken: any): Promise<any> => {
   console.log("Fetching profile picture...");
-  var image = null
+  var image = null;
   const profilePicture = await fetch(
     profilePictureUrl,
     accessToken && {
@@ -122,13 +131,11 @@ export const fetchProfilePicture = async (profilePictureUrl: string, accessToken
     const pictureBuffer = await profilePicture.arrayBuffer();
     const pictureBase64 = Buffer.from(pictureBuffer).toString("base64");
     image = `data:image/jpeg;base64,${pictureBase64}`;
-  }
-  else {
+  } else {
     console.error("Failed to fetch profile picture:", profilePictureUrl, profilePicture.statusText);
   }
   return image;
 };
-
 
 export const options: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -138,10 +145,18 @@ export const options: NextAuthOptions = {
       if (user?.isAdmin) {
         token.isAdmin = user.isAdmin;
       }
+      if (user?.roles) {
+        token.roles = user.roles;
+        console.log("JWT Token roles:", token.roles);
+      }
+
       return token;
     },
     async session({ session, token, user }) {
       session.user.isAdmin = token.isAdmin as boolean;
+      session.user.roles = token.roles ?? [];
+      console.log("Session roles:", session.user.roles);
+
       return session;
     },
   },

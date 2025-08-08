@@ -13,7 +13,10 @@ import { CircleUserRound, LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { ThemeToggle } from "./theme-toggle";
+import Link from "next/link";
+import { Mail } from "lucide-react";
 
+const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 export const UserProfile = () => {
   const { data: session } = useSession();
 
@@ -52,6 +55,16 @@ export const UserProfile = () => {
             <ThemeToggle />
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link
+            href={`mailto:${adminEmail}?subject=Feedback&body=Bonjour, voici mon retour :`}
+            className="flex gap-2"
+          >
+            <Mail {...menuIconProps} size={18} />
+            <span>Envoyer un feedback</span>
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="flex gap-2"

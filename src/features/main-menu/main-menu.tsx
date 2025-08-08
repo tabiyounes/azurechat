@@ -52,11 +52,13 @@ export const MainMenu = async () => {
             </MenuLink>
           </MenuItem>
 
-          <MenuItem tooltip="Réclamations">
-            <MenuLink href="/complaints" ariaLabel="Aller à la page des réclamations">
-              <FilePen {...menuIconProps} />
-            </MenuLink>
-          </MenuItem>
+          {user.roles?.includes("poc") &&(
+            <MenuItem tooltip="Réclamations">
+              <MenuLink href="/complaints" ariaLabel="Aller à la page des réclamations">
+                <FilePen {...menuIconProps} />
+              </MenuLink>
+            </MenuItem>
+          )}
                         
           {user.isAdmin && (
             <>

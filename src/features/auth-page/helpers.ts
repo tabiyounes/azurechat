@@ -11,6 +11,7 @@ export const userSession = async (): Promise<UserModel | null> => {
       image: session.user.image!,
       email: session.user.email!,
       isAdmin: session.user.isAdmin!,
+      roles: session.user.roles ?? [], // ✅ ADD roles
     };
   }
 
@@ -47,9 +48,15 @@ export const redirectIfAuthenticated = async () => {
   }
 };
 
+export const userHasRole = async (role: string): Promise<boolean> => {
+  const session = await userSession();
+  return session?.roles?.includes(role) ?? false;
+};
+
 export type UserModel = {
   name: string;
   image: string;
   email: string;
   isAdmin: boolean;
+  roles?: string[]; // ✅ ADD roles to UserModel
 };
