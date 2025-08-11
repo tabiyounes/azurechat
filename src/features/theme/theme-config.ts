@@ -1,5 +1,5 @@
 export const AI_NAME = "Azure Chat";
-export const AI_DESCRIPTION = "Azure Chat est un assistant IA convivial. \n « Professionnel, sobre et conforme. Voilà comment parler à l’IA. » : Respectez le RGPD, anonymisez les données sensibles, rappelez-vous que vos échanges peuvent audités donc relus, et que chaque requête consomme de l’énergie. Nous comptons sur vous pour utiliser cette ressource avec discernement.";
+export const AI_DESCRIPTION = "« Professionnel, sobre et conforme. Voilà comment parler à l’IA. » : \n Respectez le RGPD, anonymisez les données sensibles, rappelez-vous que vos échanges peuvent audités donc relus, et que chaque requête consomme de l’énergie. Nous comptons sur vous pour utiliser cette ressource avec discernement.";
 export const CHAT_DEFAULT_PERSONA = AI_NAME + " par défaut";
 
 export const CHAT_DEFAULT_SYSTEM_PROMPT = `Vous êtes un assistant IA convivial ${AI_NAME}. Vous devez toujours répondre au format markdown.

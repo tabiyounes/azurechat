@@ -1,5 +1,6 @@
 "use client";
 import { FC, useRef } from "react";
+import { Sparkles } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { ComplaintHero } from "./complaint-hero";
 import { Textarea } from "../ui/textarea";
@@ -38,12 +39,12 @@ export const ComplaintPage: FC<ComplaintPageProps> = () => {
               <div className="grid gap-4">
                 <div className="grid gap-1">
                   <Label htmlFor="causeTechnique" className="text-lg font-medium">
-                    Action Technique <span className="text-red-500">*</span>
+                    Analyse du dossier<span className="text-red-500">*</span>
                   </Label>
                   <Textarea
                     id="causeTechnique"
                     name="causeTechnique"
-                    placeholder="Ex : délais, erreur de gestion, justificatif manquant, problème technique, niveau des garanties…"
+                    placeholder="Expliquez rapidement ce qui a généré le mécontentement où l’incompréhension par rapport aux éléments du dossier et votre expertise (Ex : délais, erreur de gestion, incompréhension, niveau de garanties, problème technique … )"
                     required
                     disabled={loading === "loading"}
                   />
@@ -51,12 +52,12 @@ export const ComplaintPage: FC<ComplaintPageProps> = () => {
 
                 <div className="grid gap-1">
                   <Label htmlFor="actionCorrective" className="text-lg font-medium">
-                    Action Corrective <span className="text-red-500">*</span>
+                    Actions correctives ou maintien du refus <span className="text-red-500">*</span>
                   </Label>
                   <Textarea
                     id="actionCorrective"
                     name="actionCorrective"
-                    placeholder="Ex : complément de remboursement de X€, mise à jour des données, traitement du sinistre ce jour… OU contractuel, maintien du refus ou du processus"
+                    placeholder="Quelle est votre décision ? (Ex : complément de remboursement de X€, mise à jour des données, dédommagement… OU contractuel, maintien du refus ou du processus)"
                     required
                     disabled={loading === "loading"}
                   />
@@ -69,7 +70,7 @@ export const ComplaintPage: FC<ComplaintPageProps> = () => {
                   <Textarea
                     id="actionClient"
                     name="actionClient"
-                    placeholder="Ex : envoi de document complémentaire… Pas d'action"
+                    placeholder="Le client ou l’assuré doit-il mener une action pour obtenir satisfaction ? si oui, expliquez (Ex : envoi des fiches de salaires, envoi du nouveau RIB, envoi de la facture correspondante… )"
                     disabled={loading === "loading"}
                   />
                 </div>
@@ -93,7 +94,9 @@ export const ComplaintPage: FC<ComplaintPageProps> = () => {
 
             {/* Right side: AI suggestion */}
             <div className="w-full md:w-2/5 bg-muted border rounded-xl p-4 h-fit">
-              <h2 className="text-lg font-semibold mb-2">Réponse suggérée</h2>
+               <h2 className="flex items-center gap-2 text-lg font-semibold mb-2">
+                <Sparkles className="w-5 h-5 text-primary" /> Réponse suggérée
+              </h2>
               {error ? (
                 <p className="text-sm text-red-500 whitespace-pre-line">{error}</p>
               ) : (

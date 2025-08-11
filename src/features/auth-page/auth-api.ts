@@ -106,7 +106,7 @@ const configureIdentityProvider = () => {
             email: email,
             isAdmin: adminEmails?.includes(email),
             image: "",
-            roles: [],
+            roles: ["poc"],
           };
           console.log("=== DEV USER LOGGED IN:\n", JSON.stringify(user, null, 2));
           return user;
