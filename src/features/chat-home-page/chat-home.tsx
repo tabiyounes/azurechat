@@ -66,7 +66,7 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
                 icon={VenetianMask}
                 href="/persona"
                 description="Créer et gérer les profils IA"
-                button_title = "Ouvrir"
+                button_title = "Démarrer"
               />
               {user?.roles?.includes("poc") && (
                 <HomeActionCard
@@ -74,32 +74,12 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
                   icon={FilePen}
                   href="/complaints"
                   description="Formulez des réponses professionnelles et adaptées aux réclamations clients"
-                  button_title="Répondre"
+                  button_title="Démarrer"
                 />
               )}
 
             </div>
           </div>
-          
-          <div>
-            <h2 className="text-2xl font-bold mb-3">Extensions</h2>
-            {props.extensions && props.extensions.length > 0 ? (
-              <div className="grid grid-cols-3 gap-3">
-                {props.extensions.map((extension) => (
-                  <ExtensionCard
-                    extension={extension}
-                    key={extension.id}
-                    showContextMenu={false}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground max-w-xl">
-                Aucune extension créée
-              </p>
-            )}
-          </div>
-          
           <div>
             <h2 className="text-2xl font-bold mb-3">Personas</h2>
             {props.personas && props.personas.length > 0 ? (
@@ -115,6 +95,24 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
             ) : (
               <p className="text-muted-foreground max-w-xl">
                 Aucun profil créé
+              </p>
+            )}
+          </div>
+                    <div>
+            <h2 className="text-2xl font-bold mb-3">Extensions</h2>
+            {props.extensions && props.extensions.length > 0 ? (
+              <div className="grid grid-cols-3 gap-3">
+                {props.extensions.map((extension) => (
+                  <ExtensionCard
+                    extension={extension}
+                    key={extension.id}
+                    showContextMenu={false}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground max-w-xl">
+                Aucune extension créée
               </p>
             )}
           </div>
